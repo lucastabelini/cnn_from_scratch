@@ -18,7 +18,9 @@ class Tensor1d {
 public:
     int length = 0;
 
-    explicit Tensor1d(int length);
+    Tensor1d() = default;
+
+    Tensor1d(int length);
 
     /*
      * Initialize the tensor's values with the given distribution.
@@ -34,6 +36,11 @@ public:
      * Set the ith item of the tensor.
      */
     void set(int i, T value);
+
+    /*
+     * Multiplies tensor by scalar
+     */
+    Tensor1d<T> operator*(T multiplier);
 
     /*
      * Subtracts a tensor from another

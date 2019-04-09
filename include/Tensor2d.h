@@ -67,7 +67,7 @@ public:
 
 //    Tensor2d<T> reluPrime(Tensor2d<T> &x);
 //
-//    Tensor2d<T> softmaxPrime(Tensor2d<T> &output, std::vector<int> const &y);
+//    Tensor2d<T> crossEntropyPrime(Tensor2d<T> &output, std::vector<int> const &y);
 //
 //    std::vector<T> sumColumns();
 
@@ -94,7 +94,7 @@ public:
     /*
      * Calculates the mean across each row
      */
-    Tensor1d<T> rowWiseMean();
+    Tensor1d<T> rowWiseSum();
 
     /*
      * Initializes a tensor's values from a distribution

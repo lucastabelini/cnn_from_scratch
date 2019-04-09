@@ -43,4 +43,14 @@ Tensor1d<T>::Tensor1d(int length) {
 template<typename T>
 void Tensor1d<T>::set(int i, T value) {
     data_[i] = value;
+}
+
+template<typename T>
+Tensor1d<T> Tensor1d<T>::operator*(T multiplier) {
+    Tensor1d<T> product(length);
+    for (int i = 0; i < length; ++i) {
+        product.set(i, data_[i] * multiplier);
+    }
+
+    return product;
 };

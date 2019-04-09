@@ -1,15 +1,8 @@
 # Neural Network in Pure C++
 
 
-Simple implementation of a neural network in C++.  
-Those are NOT this project's goals:
-- speed performance;
-- use of GPU;
-- state-of-the-art performance.
+Simple implementation of a neural network in C++ using only the STL. 
 
-This project's goals:
-- not to use extern libraries (i.e. use only STL);
-- simple code.
 
 ### Installation
 Get the MNIST data set:
@@ -32,11 +25,11 @@ Run:
 The training should take less than a minute and achieve +90% accuracy.
 ### Todos
 
- - Gradient check;
- - Regularization;
- - Dropout;
- - Batch normalization;
- - Convolutional layers;
+ - [x] Gradient check;
+ - [ ] Regularization;
+ - [ ] Dropout;
+ - [ ] Batch normalization;
+ - [ ] Convolutional layers;
 
 License
 ----

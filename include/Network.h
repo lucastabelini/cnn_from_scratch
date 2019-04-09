@@ -21,14 +21,21 @@
 class Network {
     std::vector<Tensor2d<double> *> weights;
     std::vector<Tensor1d<double> *> biases;
+    std::vector<Tensor2d<double> > weight_gradients_;
+    std::vector<Tensor1d<double> > bias_gradients_;
+    std::vector<Tensor2d<double> > products_;
+    std::vector<Tensor2d<double> > activations_;
     unsigned int num_layers_;
     double learning_rate_ = 0.75;
+
+    Tensor2d<double> forward(Tensor2d<double> &x);
+
+    double computeGradients(Tensor2d<double> &x, std::vector<int> const &y);
 
     /*
      * Updates the weights with the given gradients.
      */
-    void
-    updateWeights(std::vector<Tensor2d<double> > &weight_gradients, std::vector<Tensor2d<double> > &bias_gradients);
+    void updateWeights();
 
     /*
      * Calculates cross-entropy (or log loss). y_hat (predictions) should have shape (output size, batch_size_),
@@ -39,7 +46,7 @@ class Network {
     /*
      * Calculates the derivative of a classifier with softmax + cross entropy.
      */
-    Tensor2d<double> softmaxPrime(Tensor2d<double> &output, std::vector<int> const &y);
+    Tensor2d<double> crossEntropyPrime(Tensor2d<double> &output, std::vector<int> const &y);
 
 public:
     /*
@@ -69,7 +76,10 @@ public:
     /*
      * Trains the network on a batch. x should have shape (input size, batch size) and y (batch size)
      */
-    double train_step(Tensor2d<double> &x, std::vector<int> const &y);
+    double trainStep(Tensor2d<double> &x, std::vector<int> const &y);
+
+    double
+    gradientCheck(Tensor2d<double> &x, std::vector<int> const &y, double h = 1e-7, int max_gradients_check = 800);
 };
 
 

@@ -24,17 +24,20 @@ int main(int argc, char **argv) {
 
     // Define network with 3 layers (1 input, 1 hidden and 1 output), input size = 784, hidden layer size = 30, output size = 10
     vector<unsigned int> layers = {784, 30, 10};
-    Network net(layers, 0, 1.0);
+    Network net(layers, 0, 2.0);
 
-    int epochs = 3;
+
+    int epochs = 1;
+    printf("Training for %d epoch(s).\n", epochs);
     // Train network
+    int num_train_batches = train_loader.getNumBatches();
     for (int k = 0; k < epochs; ++k) {
         printf("Epoch %d\n", k + 1);
-        for (int i = 0; i < train_loader.getNumBatches(); ++i) {
+        for (int i = 0; i < num_train_batches; ++i) {
             pair<Tensor2d<double>, vector<int> > xy = train_loader.nextBatch();
-            double loss = net.train_step(xy.first, xy.second);
+            double loss = net.trainStep(xy.first, xy.second);
             if ((i + 1) % 10 == 0) {
-                printf("\rIteration %d/%d - Loss: %.4lf", i + 1, train_loader.getNumBatches(), loss);
+                printf("\rIteration %d/%d - Batch Loss: %.4lf", i + 1, num_train_batches, loss);
                 fflush(stdout);
             }
         }
@@ -54,9 +57,10 @@ int main(int argc, char **argv) {
     int hits = 0;
     int total = 0;
     printf("Testing...\n");
-    for (int i = 0; i < test_loader.getNumBatches(); ++i) {
-        if ((i + 1) % 10 == 0) {
-            printf("\rIteration %d/%d", i + 1, test_loader.getNumBatches());
+    int num_test_batches = test_loader.getNumBatches();
+    for (int i = 0; i < num_test_batches; ++i) {
+        if ((i + 1) % 10 == 0 || i == (num_test_batches - 1)) {
+            printf("\rIteration %d/%d", i + 1, num_test_batches);
             fflush(stdout);
         }
         pair<Tensor2d<double>, vector<int> > xy = test_loader.nextBatch();

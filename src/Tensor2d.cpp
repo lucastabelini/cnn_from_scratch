@@ -166,14 +166,14 @@ Tensor2d<T> Tensor2d<T>::softmax() {
 }
 
 template<typename T>
-Tensor1d<T> Tensor2d<T>::rowWiseMean() {
+Tensor1d<T> Tensor2d<T>::rowWiseSum() {
     Tensor1d<T> mean(rows);
     for (int i = 0; i < rows; ++i) {
         T total = 0;
         for (int j = 0; j < cols; ++j) {
             total += get(i, j);
         }
-        mean.set(i, total / cols);
+        mean.set(i, total);
     }
     return mean;
 }
