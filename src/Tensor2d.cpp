@@ -23,10 +23,11 @@ Tensor2d<T>::Tensor2d(int rows, int cols) {
 }
 
 template<typename T>
-void Tensor2d<T>::randn(std::default_random_engine generator, std::normal_distribution<T> distribution) {
+void
+Tensor2d<T>::randn(std::default_random_engine generator, std::normal_distribution<T> distribution, double multiplier) {
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
-            set(i, j, distribution(generator));
+            set(i, j, distribution(generator) * multiplier);
         }
     }
 }
@@ -179,7 +180,7 @@ Tensor1d<T> Tensor2d<T>::rowWiseSum() {
 }
 
 template<typename T>
-Tensor2d<T> Tensor2d<T>::operator+(Tensor1d<T> bias) {
+Tensor2d<T> Tensor2d<T>::operator+(Tensor1d<T> &bias) {
     assert(bias.length == this->rows);
     Tensor2d<T> sum(this->rows, this->cols);
     for (int k = 0; k < this->cols; ++k) {
@@ -249,7 +250,7 @@ Tensor2d<T>::~Tensor2d() {
 }
 
 template<typename T>
-Tensor2d<T> &Tensor2d<T>::operator=(const Tensor2d<T> &other) {
+Tensor2d<T>& Tensor2d<T>::operator=(const Tensor2d<T> &other) {
     if (this != &other) {
         T *new_data = new T[other.rows * other.cols];
         std::copy(other.data_, other.data_ + other.rows * other.cols, new_data);
@@ -293,4 +294,29 @@ void Tensor2d<T>::print() {
         }
     }
 
+}
+
+template<typename T>
+double Tensor2d<T>::sum() {
+    double total = 0;
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            total += get(i, j);
+        }
+    }
+    return total;
+}
+
+template<typename T>
+Tensor2d<T> Tensor2d<T>::operator+(Tensor2d<T> other) {
+    assert(rows == other.rows);
+    assert(cols == other.cols);
+    Tensor2d<T> sum(rows, cols);
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            sum.set(i, j, get(i, j) + other.get(i, j));
+        }
+    }
+
+    return sum;
 }

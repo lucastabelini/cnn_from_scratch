@@ -26,7 +26,7 @@ The training should take less than a minute and achieve +90% accuracy.
 ### Todos
 
  - [x] Gradient check;
- - [ ] Regularization;
+ - [x] Regularization;
  - [ ] Dropout;
  - [ ] Batch normalization;
  - [ ] Convolutional layers;

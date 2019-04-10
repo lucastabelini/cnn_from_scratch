@@ -7,9 +7,10 @@
 #include "../include/Tensor2d.h"
 
 
-Network::Network(std::vector<unsigned int> &layers, int seed = 0, double learning_rate = 0.75) {
+Network::Network(std::vector<unsigned int> &layers, int seed = 0, double learning_rate, double regularization) {
     this->learning_rate_ = learning_rate;
     this->num_layers_ = (unsigned int) layers.size();
+    this->regularization_ = regularization;
     std::default_random_engine generator(seed);
     weights.resize(num_layers_ - 1);
     biases.resize(num_layers_ - 1);
@@ -20,11 +21,11 @@ Network::Network(std::vector<unsigned int> &layers, int seed = 0, double learnin
 
     // Initialize weights
     for (int i = 0; i < this->num_layers_ - 1; ++i) {
-        std::normal_distribution<double> distribution(0.0, sqrt(2.0 / layers[i + 1]));
+        std::normal_distribution<double> distribution(0.0, 1.0);
         weights[i] = new Tensor2d<double>(layers[i + 1], layers[i]);
-        weights[i]->randn(generator, distribution);
+        weights[i]->randn(generator, distribution, sqrt(2.0 / layers[i + 1]));
         biases[i] = new Tensor1d<double>(layers[i + 1]);
-        biases[i]->randn(generator, distribution);
+        biases[i]->randn(generator, distribution, 0);
     }
 }
 
@@ -94,7 +95,7 @@ std::vector<int> Network::predict(Tensor2d<double> &x) {
 double Network::computeGradients(Tensor2d<double> &x, std::vector<int> const &y) {
     int batch_size = x.cols;
     Tensor2d<double> output = forward(x);
-    double loss = crossEntropy(output, y);
+    double loss = crossEntropy(output, y) + regularizationLoss();
 
     // backprop
     Tensor2d<double> cost_prime = crossEntropyPrime(output, y) / batch_size;
@@ -103,7 +104,7 @@ double Network::computeGradients(Tensor2d<double> &x, std::vector<int> const &y)
 
     // Last layer's gradients is a special case
     weight_gradients_[weight_gradients_.size() - 1] = (delta.matmul(
-            activations_[activations_.size() - 2].transpose()));
+            activations_[activations_.size() - 2].transpose())) + (*weights[weights.size() - 1] * regularization_);
     bias_gradients_[bias_gradients_.size() - 1] = delta.rowWiseSum();
 
     //The rest follows a pattern
@@ -112,8 +113,9 @@ double Network::computeGradients(Tensor2d<double> &x, std::vector<int> const &y)
         delta = ((weights[weights.size() - j + 1]->transpose()).matmul(delta)) * activationPrime;
         bias_gradients_[bias_gradients_.size() - j] = delta.rowWiseSum();
 
+        Tensor2d<double> regularization_gradient = (*weights[weights.size() - j]) * regularization_;
         weight_gradients_[weight_gradients_.size() - j] =
-                (delta.matmul(activations_[activations_.size() - j - 1].transpose()));
+                (delta.matmul(activations_[activations_.size() - j - 1].transpose())) + regularization_gradient;
     }
 
     return loss;
@@ -214,11 +216,11 @@ double Network::gradientCheck(Tensor2d<double> &x, std::vector<int> const &y, do
 
                 weights[i]->set(j, k, weight_ijk - h);
                 output = forward(x); // f(w - h)
-                loss_minus = crossEntropy(output, y);
+                loss_minus = crossEntropy(output, y) + regularizationLoss();
 
                 weights[i]->set(j, k, weight_ijk + h);
                 output = forward(x); // f(w + h)
-                loss_plus = crossEntropy(output, y);
+                loss_plus = crossEntropy(output, y) + regularizationLoss();
 
                 numerical_dw = (loss_plus - loss_minus) / (2 * h);
                 analytical_dw = weight_gradients_[i].get(j, k);
@@ -242,11 +244,11 @@ double Network::gradientCheck(Tensor2d<double> &x, std::vector<int> const &y, do
 
             biases[i]->set(j, bias_i_j_before - h);
             output = forward(x); // f(w - h)
-            loss_minus = crossEntropy(output, y);
+            loss_minus = crossEntropy(output, y) + regularizationLoss();
 
             biases[i]->set(j, bias_i_j_before + h);
             output = forward(x); // f(w + h)
-            loss_plus = crossEntropy(output, y);
+            loss_plus = crossEntropy(output, y) + regularizationLoss();
 
             numerical_db = (loss_plus - loss_minus) / (2 * h);
             analytical_db = bias_gradients_[i][j];
@@ -263,4 +265,13 @@ double Network::gradientCheck(Tensor2d<double> &x, std::vector<int> const &y, do
     printf("\rMaximum relative error: %e\n", max_relative_error);
 
     return 0;
+}
+
+double Network::regularizationLoss() {
+    double reg_loss = 0;
+    for (int i = 0; i < num_layers_ - 1; ++i) {
+        reg_loss += ((*weights[i]) * (*weights[i])).sum();
+    }
+
+    return reg_loss * 0.5 * regularization_;
 }

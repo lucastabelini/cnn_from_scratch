@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
 
     // Define network with 3 layers (1 input, 1 hidden and 1 output), input size = 784, hidden layer size = 30, output size = 10
     vector<unsigned int> layers = {784, 30, 10};
-    Network net(layers, 0, 2.0);
+    Network net(layers, 0, 2.0, 1e-3);
 
 
     int epochs = 1;

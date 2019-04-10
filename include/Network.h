@@ -27,6 +27,7 @@ class Network {
     std::vector<Tensor2d<double> > activations_;
     unsigned int num_layers_;
     double learning_rate_ = 0.75;
+    double regularization_;
 
     Tensor2d<double> forward(Tensor2d<double> &x);
 
@@ -53,7 +54,7 @@ public:
      * layers should be a vector with the number of neurons in each layer. The first value should be the input size,
      * while the last should be the output size. The seed will be used to initialize the network's weights.
      */
-    explicit Network(std::vector<unsigned int> &layers, int seed, double learning_rate);
+    explicit Network(std::vector<unsigned int> &layers, int seed, double learning_rate = 2.0, double regularization = 1e-3);
 
     ~Network();
 
@@ -80,6 +81,8 @@ public:
 
     double
     gradientCheck(Tensor2d<double> &x, std::vector<int> const &y, double h = 1e-7, int max_gradients_check = 800);
+
+    double regularizationLoss();
 };
 
 

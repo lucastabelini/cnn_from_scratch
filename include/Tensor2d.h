@@ -52,7 +52,7 @@ public:
     /*
      * Sums a 1-dimensional tensor to a 2-dimensional tensor.
      */
-    Tensor2d<T> operator+(Tensor1d<T> bias);
+    Tensor2d<T> operator+(Tensor1d<T> &bias);
 
 //    Tensor2d<T> relu();
 
@@ -65,11 +65,21 @@ public:
 
     Tensor2d<T> softmax();
 
+    /*
+     * Sum every element
+     */
+    double sum();
+
 //    Tensor2d<T> reluPrime(Tensor2d<T> &x);
 //
 //    Tensor2d<T> crossEntropyPrime(Tensor2d<T> &output, std::vector<int> const &y);
 //
 //    std::vector<T> sumColumns();
+
+    /*
+     * Sum of two 2d tensors
+     */
+    Tensor2d<T> operator+(Tensor2d<T> other);
 
     /*
      * Element-wise multiplication of two 2d tensors
@@ -99,14 +109,14 @@ public:
     /*
      * Initializes a tensor's values from a distribution
      */
-    void randn(std::default_random_engine generator, std::normal_distribution<T> distribution);
+    void randn(std::default_random_engine generator, std::normal_distribution<T> distribution, double multiplier);
 
     /*
      * Prints the tensor's data
      */
     void print();
 
-    Tensor2d<T> &operator=(const Tensor2d<T> &other);
+    Tensor2d<T>& operator=(const Tensor2d<T> &other);
 
     Tensor2d<T>(const Tensor2d<T> &other);
 

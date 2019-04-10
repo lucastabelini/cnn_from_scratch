@@ -25,7 +25,7 @@ public:
     /*
      * Initialize the tensor's values with the given distribution.
      */
-    void randn(std::default_random_engine generator, std::normal_distribution<T> distribution);
+    void randn(std::default_random_engine generator, std::normal_distribution<T> distribution, double multiplier);
 
     /*
      * Access the ith item of the tensor.
@@ -46,6 +46,10 @@ public:
      * Subtracts a tensor from another
      */
     Tensor1d<T> operator-=(Tensor1d<T> &difference);
+
+    Tensor1d<T>& operator=(const Tensor1d<T> &other);
+
+    ~Tensor1d();
 };
 
 #endif //NEURAL_NET_IN_CPP_TENSOR1D_H

@@ -12,9 +12,9 @@ template
 class Tensor1d<double>;
 
 template<typename T>
-void Tensor1d<T>::randn(std::default_random_engine generator, std::normal_distribution<T> distribution) {
+void Tensor1d<T>::randn(std::default_random_engine generator, std::normal_distribution<T> distribution, double multiplier) {
     for (int i = 0; i < length; ++i) {
-        data_[i] = distribution(generator);
+        data_[i] = distribution(generator) * multiplier;
     }
 }
 
@@ -53,4 +53,26 @@ Tensor1d<T> Tensor1d<T>::operator*(T multiplier) {
     }
 
     return product;
+}
+
+template<typename T>
+Tensor1d<T> &Tensor1d<T>::operator=(const Tensor1d<T> &other) {
+    if (this != &other) {
+        T *new_data = new T[other.length];
+        std::copy(other.data_, other.data_ + other.length, new_data);
+
+        if (length != 0) {
+            delete[] data_;
+        }
+
+        data_ = new_data;
+        length = other.length;
+    }
+
+    return *this;
+}
+
+template<typename T>
+Tensor1d<T>::~Tensor1d() {
+    delete[] data_;
 };
