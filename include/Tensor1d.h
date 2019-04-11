@@ -14,6 +14,7 @@
 
 template<typename T>
 class Tensor1d {
+private:
     T *data_;
 public:
     int length = 0;

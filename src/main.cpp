@@ -1,6 +1,10 @@
 #include <iostream>
 #include "../include/Tensor2d.h"
-#include "../include/Network.h"
+#include "../include/NetworkModel.h"
+#include "../include/Module.h"
+#include "../include/FullyConnected.h"
+#include "../include/Sigmoid.h"
+#include "../include/SoftmaxClassifier.h"
 #include "../include/MNISTDataLoader.h"
 
 using namespace std;
@@ -11,8 +15,7 @@ using namespace std;
 
 int main(int argc, char **argv) {
     if (argc < 2) {
-        printf("Please provide the data directory path as an argument. Exiting.\n");
-        exit(1);
+        throw "Please provide the data directory path as an argument. Exiting.\n";
     }
     printf("Data directory: %s\n", argv[1]);
     string data_path = argv[1];
@@ -22,9 +25,9 @@ int main(int argc, char **argv) {
     MNISTDataLoader train_loader(data_path + "/train-images-idx3-ubyte", data_path + "/train-labels-idx1-ubyte", 32);
     printf("Loaded.\n");
 
-    // Define network with 3 layers (1 input, 1 hidden and 1 output), input size = 784, hidden layer size = 30, output size = 10
-    vector<unsigned int> layers = {784, 30, 10};
-    Network net(layers, 0, 2.0, 1e-3);
+    vector<Module *> modules = {new FullyConnected(784, 30), new Sigmoid(), new FullyConnected(30, 10)};
+    NetworkModel model = NetworkModel(modules, new SoftmaxClassifier(), 2.0);
+    model.load("network.txt");
 
 
     int epochs = 1;
@@ -35,7 +38,7 @@ int main(int argc, char **argv) {
         printf("Epoch %d\n", k + 1);
         for (int i = 0; i < num_train_batches; ++i) {
             pair<Tensor2d<double>, vector<int> > xy = train_loader.nextBatch();
-            double loss = net.trainStep(xy.first, xy.second);
+            double loss = model.trainStep(xy.first, xy.second);
             if ((i + 1) % 10 == 0) {
                 printf("\rIteration %d/%d - Batch Loss: %.4lf", i + 1, num_train_batches, loss);
                 fflush(stdout);
@@ -45,8 +48,7 @@ int main(int argc, char **argv) {
     }
 
     // Save weights
-    net.save();
-
+    model.save("network.txt");
 
     printf("Loading testing set... ");
     fflush(stdout);
@@ -64,7 +66,7 @@ int main(int argc, char **argv) {
             fflush(stdout);
         }
         pair<Tensor2d<double>, vector<int> > xy = test_loader.nextBatch();
-        vector<int> predictions = net.predict(xy.first);
+        vector<int> predictions = model.predict(xy.first);
         for (int j = 0; j < predictions.size(); ++j) {
             if (predictions[j] == xy.second[j]) {
                 hits++;

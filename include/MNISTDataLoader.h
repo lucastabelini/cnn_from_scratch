@@ -18,6 +18,7 @@
  */
 
 class MNISTDataLoader {
+private:
     std::vector<std::vector<std::vector<double> > > images_;
     std::vector<int> labels_;
 

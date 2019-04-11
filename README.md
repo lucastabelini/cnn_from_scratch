@@ -1,8 +1,6 @@
 # Neural Network in Pure C++
 
-
-Simple implementation of a neural network in C++ using only the STL. 
-
+Simple modular implementation of a neural network in C++ using only the STL. 
 
 ### Installation
 Get the MNIST data set:
@@ -24,12 +22,14 @@ Run:
 ```
 The training should take less than a minute and achieve +90% accuracy.
 ### Todos
-
- - [x] Gradient check;
- - [x] Regularization;
  - [ ] Dropout;
+ - [ ] ReLU;
+ - [ ] Tanh;
+ - [ ] Leaky ReLU;
  - [ ] Batch normalization;
  - [ ] Convolutional layers;
+ - [ ] Max pooling;
+ - [ ] CUDA?
 
 License
 ----

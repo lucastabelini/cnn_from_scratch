@@ -19,6 +19,7 @@
 
 template<typename T>
 class Tensor2d {
+private:
     T *data_;
 public:
     int rows = 0, cols = 0;
@@ -116,7 +117,7 @@ public:
      */
     void print();
 
-    Tensor2d<T>& operator=(const Tensor2d<T> &other);
+    Tensor2d<T> &operator=(const Tensor2d<T> &other);
 
     Tensor2d<T>(const Tensor2d<T> &other);
 
