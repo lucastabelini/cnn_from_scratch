@@ -22,7 +22,7 @@ Run:
 ```
 The training should take less than a minute and achieve +90% accuracy.
 ### Todos
- - [ ] Dropout;
+ - [x] Dropout;
  - [ ] ReLU;
  - [ ] Tanh;
  - [ ] Leaky ReLU;

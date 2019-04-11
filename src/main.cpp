@@ -4,6 +4,7 @@
 #include "../include/Module.h"
 #include "../include/FullyConnected.h"
 #include "../include/Sigmoid.h"
+#include "../include/Dropout.h"
 #include "../include/SoftmaxClassifier.h"
 #include "../include/MNISTDataLoader.h"
 
@@ -27,7 +28,7 @@ int main(int argc, char **argv) {
 
     vector<Module *> modules = {new FullyConnected(784, 30), new Sigmoid(), new FullyConnected(30, 10)};
     NetworkModel model = NetworkModel(modules, new SoftmaxClassifier(), 2.0);
-    model.load("network.txt");
+//    model.load("network.txt");
 
 
     int epochs = 1;

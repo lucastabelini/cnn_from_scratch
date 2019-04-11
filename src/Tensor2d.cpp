@@ -250,7 +250,7 @@ Tensor2d<T>::~Tensor2d() {
 }
 
 template<typename T>
-Tensor2d<T>& Tensor2d<T>::operator=(const Tensor2d<T> &other) {
+Tensor2d<T> &Tensor2d<T>::operator=(const Tensor2d<T> &other) {
     if (this != &other) {
         T *new_data = new T[other.rows * other.cols];
         std::copy(other.data_, other.data_ + other.rows * other.cols, new_data);
