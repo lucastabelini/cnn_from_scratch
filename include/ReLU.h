@@ -2,19 +2,19 @@
 // Created by lucas on 11/04/19.
 //
 
-#ifndef NEURAL_NET_IN_CPP_DROPOUT_H
-#define NEURAL_NET_IN_CPP_DROPOUT_H
+#ifndef NEURAL_NET_IN_CPP_RELU_H
+#define NEURAL_NET_IN_CPP_RELU_H
 
 
+#include "Tensor2d.h"
 #include "Module.h"
 
-class Dropout : public Module {
+class ReLU : public Module{
 private:
-    double p_;
+    Tensor2d<double> input_;
     Tensor2d<double> product_;
-    Tensor2d<double> dropout_;
 public:
-    explicit Dropout(double p = 0.5);
+    ReLU();
 
     Tensor2d<double> &forward(Tensor2d<double> &input) override;
 
@@ -26,4 +26,4 @@ public:
 };
 
 
-#endif //NEURAL_NET_IN_CPP_DROPOUT_H
+#endif //NEURAL_NET_IN_CPP_RELU_H

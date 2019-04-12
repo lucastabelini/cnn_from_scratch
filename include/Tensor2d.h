@@ -55,7 +55,7 @@ public:
      */
     Tensor2d<T> operator+(Tensor1d<T> &bias);
 
-//    Tensor2d<T> relu();
+    Tensor2d<T> relu();
 
     Tensor2d<T> sigmoid();
 
@@ -71,7 +71,7 @@ public:
      */
     double sum();
 
-//    Tensor2d<T> reluPrime(Tensor2d<T> &x);
+    Tensor2d<T> reluPrime();
 //
 //    Tensor2d<T> crossEntropyPrime(Tensor2d<T> &output, std::vector<int> const &y);
 //

@@ -7,6 +7,7 @@
 #include "../include/Dropout.h"
 #include "../include/SoftmaxClassifier.h"
 #include "../include/MNISTDataLoader.h"
+#include "../include/ReLU.h"
 
 using namespace std;
 

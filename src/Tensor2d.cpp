@@ -79,17 +79,17 @@ Tensor2d<T> Tensor2d<T>::matmul(Tensor2d<T> other) {
 }
 
 
-//template<typename T>
-//Tensor2d<T> Tensor2d<T>::relu() {
-//    Tensor2d<T> reluResult(this->rows, this->cols_);
-//    for (int j = 0; j < this->rows; ++j) {
-//        for (int k = 0; k < this->cols_; ++k) {
-//            T x = this->get(j, k);
-//            reluResult.set(j, k, x > 0 ? x : 0);
-//        }
-//    }
-//    return reluResult;
-//}
+template<typename T>
+Tensor2d<T> Tensor2d<T>::relu() {
+    Tensor2d<T> reluResult(rows, cols);
+    for (int j = 0; j < rows; ++j) {
+        for (int k = 0; k < cols; ++k) {
+            T x = get(j, k);
+            reluResult.set(j, k, x > 0 ? x : 0);
+        }
+    }
+    return reluResult;
+}
 
 template<typename T>
 T sigmoid(T x) {
@@ -126,18 +126,17 @@ Tensor2d<T> Tensor2d<T>::sigmoidPrime() {
 }
 
 
+template<typename T>
+Tensor2d<T> Tensor2d<T>::reluPrime() {
+    Tensor2d<T> prime(rows, cols);
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            prime.set(i, j, get(i, j) > 0 ? 1 : 0);
+        }
+    }
 
-//template<typename T>
-//Tensor2d<T> Tensor2d<T>::reluPrime(Tensor2d<T> &x) {
-//    Tensor2d<T> prime(x.rows, x.cols_);
-//    for (int i = 0; i < x.rows; ++i) {
-//        for (int j = 0; j < x.cols_; ++j) {
-//            prime.set(i, j, x.get(i, j) > 0 ? 1 : 0);
-//        }
-//    }
-//
-//    return prime;
-//}
+    return prime;
+}
 
 template<typename T>
 Tensor2d<T> Tensor2d<T>::softmax() {
