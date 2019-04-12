@@ -23,12 +23,14 @@ Run:
 The training should take less than a minute and achieve +90% accuracy.
 ### Todos
  - [x] Dropout;
- - [ ] ReLU;
+ - [x] ReLU;
  - [ ] Tanh;
  - [ ] Leaky ReLU;
  - [ ] Batch normalization;
  - [ ] Convolutional layers;
  - [ ] Max pooling;
+ - [ ] Other optimizers (Adam, RMSProp, etc);
+ - [ ] Learning rate scheduler;
  - [ ] CUDA?
 
 License
