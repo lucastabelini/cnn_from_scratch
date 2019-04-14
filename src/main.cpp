@@ -1,5 +1,4 @@
 #include <iostream>
-#include "../include/Tensor2d.h"
 #include "../include/NetworkModel.h"
 #include "../include/Module.h"
 #include "../include/FullyConnected.h"
@@ -8,6 +7,7 @@
 #include "../include/SoftmaxClassifier.h"
 #include "../include/MNISTDataLoader.h"
 #include "../include/ReLU.h"
+#include "../include/Tensor.h"
 
 using namespace std;
 
@@ -17,7 +17,7 @@ using namespace std;
 
 int main(int argc, char **argv) {
     if (argc < 2) {
-        throw "Please provide the data directory path as an argument. Exiting.\n";
+        throw runtime_error("Please provide the data directory path as an argument");
     }
     printf("Data directory: %s\n", argv[1]);
     string data_path = argv[1];
@@ -27,10 +27,11 @@ int main(int argc, char **argv) {
     MNISTDataLoader train_loader(data_path + "/train-images-idx3-ubyte", data_path + "/train-labels-idx1-ubyte", 32);
     printf("Loaded.\n");
 
-    vector<Module *> modules = {new FullyConnected(784, 30), new Sigmoid(), new FullyConnected(30, 10)};
+    int seed = 0;
+
+    vector<Module *> modules = {new FullyConnected(784, 30, seed), new Sigmoid(), new FullyConnected(30, 10, seed)};
     NetworkModel model = NetworkModel(modules, new SoftmaxClassifier(), 2.0);
 //    model.load("network.txt");
-
 
     int epochs = 1;
     printf("Training for %d epoch(s).\n", epochs);
@@ -39,7 +40,7 @@ int main(int argc, char **argv) {
     for (int k = 0; k < epochs; ++k) {
         printf("Epoch %d\n", k + 1);
         for (int i = 0; i < num_train_batches; ++i) {
-            pair<Tensor2d<double>, vector<int> > xy = train_loader.nextBatch();
+            pair<Tensor<double>, vector<int> > xy = train_loader.nextBatch();
             double loss = model.trainStep(xy.first, xy.second);
             if ((i + 1) % 10 == 0) {
                 printf("\rIteration %d/%d - Batch Loss: %.4lf", i + 1, num_train_batches, loss);
@@ -48,7 +49,6 @@ int main(int argc, char **argv) {
         }
         printf("\n");
     }
-
     // Save weights
     model.save("network.txt");
 
@@ -67,7 +67,7 @@ int main(int argc, char **argv) {
             printf("\rIteration %d/%d", i + 1, num_test_batches);
             fflush(stdout);
         }
-        pair<Tensor2d<double>, vector<int> > xy = test_loader.nextBatch();
+        pair<Tensor<double>, vector<int> > xy = test_loader.nextBatch();
         vector<int> predictions = model.predict(xy.first);
         for (int j = 0; j < predictions.size(); ++j) {
             if (predictions[j] == xy.second[j]) {

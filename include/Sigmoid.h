@@ -6,7 +6,7 @@
 #define NEURAL_NET_IN_CPP_SIGMOID_H
 
 #include "Module.h"
-#include "Tensor2d.h"
+#include "Tensor.h"
 
 /*
  * Sigmoid activation layer
@@ -14,14 +14,14 @@
  */
 class Sigmoid : public Module {
 private:
-    Tensor2d<double> input_;
-    Tensor2d<double> product_;
+    Tensor<double> input_;
+    Tensor<double> product_;
 public:
     Sigmoid();
 
-    Tensor2d<double> &forward(Tensor2d<double> &input) override;
+    Tensor<double> &forward(Tensor<double> &input) override;
 
-    Tensor2d<double> backprop(Tensor2d<double> chainGradient, double learning_rate) override;
+    Tensor<double> backprop(Tensor<double> chainGradient, double learning_rate) override;
 
     void load(FILE *file_model) override;
 

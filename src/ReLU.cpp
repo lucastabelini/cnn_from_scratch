@@ -6,14 +6,14 @@
 
 ReLU::ReLU() = default;
 
-Tensor2d<double> &ReLU::forward(Tensor2d<double> &input) {
+Tensor<double> &ReLU::forward(Tensor<double> &input) {
     input_ = input;
     product_ = input.relu();
 
     return product_;
 }
 
-Tensor2d<double> ReLU::backprop(Tensor2d<double> chainGradient, double learning_rate) {
+Tensor<double> ReLU::backprop(Tensor<double> chainGradient, double learning_rate) {
     return chainGradient * input_.reluPrime();
 }
 

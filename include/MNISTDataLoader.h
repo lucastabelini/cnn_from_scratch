@@ -11,7 +11,7 @@
 #include <fstream>
 #include <errno.h>
 #include <string.h>
-#include "Tensor2d.h"
+#include "Tensor.h"
 
 /*
  * Utility to read MNIST data.
@@ -55,7 +55,7 @@ public:
      * Get next batch. Last batch of the dataset may not have the same size of the others.
      * Is cyclical, so it can be used indefinitely.
      */
-    std::pair<Tensor2d<double>, std::vector<int> > nextBatch();
+    std::pair<Tensor<double>, std::vector<int>> nextBatch();
 };
 
 #endif //NEURAL_NET_IN_CPP_MNISTDATALOADER_H

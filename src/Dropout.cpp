@@ -3,26 +3,23 @@
 //
 
 #include "../include/Dropout.h"
+#include "../include/Tensor.h"
 
 Dropout::Dropout(double p) {
     p_ = p;
 }
 
-Tensor2d<double> &Dropout::forward(Tensor2d<double> &input) {
-    dropout_ = Tensor2d<double>(input.rows, input.cols);
-    std::default_random_engine generator(0);
+Tensor<double> &Dropout::forward(Tensor<double> &input, int seed) {
+    dropout_ = Tensor<double>(input.num_dims, input.dims);
+    std::default_random_engine generator(seed);
     std::uniform_real_distribution<> distribution(0., 1.);
 
-    for (int i = 0; i < dropout_.rows; ++i) {
-        for (int j = 0; j < dropout_.cols; ++j) {
-            dropout_.set(i, j, (distribution(generator) < p_) / p_);
-        }
-    }
+    dropout_.dropout(generator, distribution, p_);
     product_ = input * dropout_;
     return product_;
 }
 
-Tensor2d<double> Dropout::backprop(Tensor2d<double> chainGradient, double learning_rate) {
+Tensor<double> Dropout::backprop(Tensor<double> chainGradient, double learning_rate) {
     return chainGradient * dropout_;
 }
 

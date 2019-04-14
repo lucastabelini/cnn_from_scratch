@@ -6,6 +6,7 @@
 #define NEURAL_NET_IN_CPP_NETWORKMODEL_H
 
 #include <vector>
+#include "Tensor.h"
 #include "Module.h"
 #include "OutputLayer.h"
 
@@ -20,11 +21,11 @@ private:
 public:
     NetworkModel(std::vector<Module *> &modules, OutputLayer *output_layer, double learning_rate);
 
-    double trainStep(Tensor2d<double> &x, std::vector<int> y);
+    double trainStep(Tensor<double> &x, std::vector<int> y);
 
-    Tensor2d<double> forward(Tensor2d<double> &x);
+    Tensor<double> forward(Tensor<double> &x);
 
-    std::vector<int> predict(Tensor2d<double> &x);
+    std::vector<int> predict(Tensor<double> &x);
 
     void load(std::string path);
 

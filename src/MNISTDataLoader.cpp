@@ -3,6 +3,7 @@
 //
 
 #include "../include/MNISTDataLoader.h"
+#include "../include/Tensor.h"
 
 
 MNISTDataLoader::MNISTDataLoader(std::string const &imagesPath, std::string const &labelsPath,
@@ -33,6 +34,8 @@ void MNISTDataLoader::loadImages(std::string const &path) {
     rows_ = bytesToUInt(bytes);
     file.read(bytes, 4);
     cols_ = bytesToUInt(bytes);
+
+//    num_images_ = 64;
 
     images_.resize(num_images_);
     char byte;
@@ -89,16 +92,17 @@ void MNISTDataLoader::loadLabels(std::string const &path) {
 //        printf("Label: %d\n", labels_[idx]);
 //    }
 
-std::pair<Tensor2d<double>, std::vector<int> > MNISTDataLoader::nextBatch() {
-    std::pair<Tensor2d<double>, std::vector<int> > batchXY;
+std::pair<Tensor<double>, std::vector<int>> MNISTDataLoader::nextBatch() {
+    std::pair<Tensor<double>, std::vector<int> > batchXY;
     int imgsMissing = num_images_ - batch_idx_;
     int size = imgsMissing > batch_size_ ? batch_size_ : imgsMissing;
-    Tensor2d<double> tensorImgs(rows_ * cols_, size);
+    int dims[] = {size, 1, (int) rows_, (int) cols_};
+    Tensor<double> tensorImgs(4, dims);
     std::vector<int> vecLabels;
     for (int i = 0; i < size; ++i) {
         for (int j = 0; j < rows_; ++j) {
             for (int k = 0; k < cols_; ++k) {
-                tensorImgs.set(j * cols_ + k, i, ((double) (images_[batch_idx_ + i][j][k])) / 255.0);
+                tensorImgs.set(i, 0, j, k, ((double) (images_[batch_idx_ + i][j][k])) / 255.0);
             }
         }
         vecLabels.push_back(labels_[batch_idx_ + i]);

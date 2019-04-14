@@ -11,14 +11,14 @@
 class Dropout : public Module {
 private:
     double p_;
-    Tensor2d<double> product_;
-    Tensor2d<double> dropout_;
+    Tensor<double> product_;
+    Tensor<double> dropout_;
 public:
     explicit Dropout(double p = 0.5);
 
-    Tensor2d<double> &forward(Tensor2d<double> &input) override;
+    Tensor<double> &forward(Tensor<double> &input, int seed) override;
 
-    Tensor2d<double> backprop(Tensor2d<double> chainGradient, double learning_rate) override;
+    Tensor<double> backprop(Tensor<double> chainGradient, double learning_rate) override;
 
     void load(FILE *file_model) override;
 

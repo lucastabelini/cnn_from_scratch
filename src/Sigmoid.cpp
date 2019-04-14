@@ -7,14 +7,14 @@
 Sigmoid::Sigmoid() = default;
 
 
-Tensor2d<double> &Sigmoid::forward(Tensor2d<double> &input) {
+Tensor<double> &Sigmoid::forward(Tensor<double> &input) {
     input_ = input;
     product_ = input.sigmoid();
 
     return product_;
 }
 
-Tensor2d<double> Sigmoid::backprop(Tensor2d<double> chainGradient, double learning_rate) {
+Tensor<double> Sigmoid::backprop(Tensor<double> chainGradient, double learning_rate) {
     return chainGradient * input_.sigmoidPrime();
 }
 

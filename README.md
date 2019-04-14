@@ -10,7 +10,7 @@ bash get_mnist.sh
 ```
 Generate your Makefile:
 ```sh
-cmake
+cmake -DCMAKE_BUILD_TYPE=Release
 ```
 Make the code:
 ```sh
@@ -20,7 +20,7 @@ Run:
 ```sh
 ./neural_net_in_cpp data
 ```
-The training should take less than a minute and achieve +90% accuracy.
+The training should take less than 10s and achieve +90% accuracy.
 ### Todos
  - [x] Dropout;
  - [x] ReLU;
