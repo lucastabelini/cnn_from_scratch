@@ -3,12 +3,19 @@
 //
 
 #include "../include/Tensor.h"
+#include <cstring> // memset
 
 template
 class Tensor<float>;
 
 template
 class Tensor<double>;
+
+
+template<typename T>
+void Tensor<T>::zero() {
+    memset(data_, 0, sizeof(T) * size_);
+}
 
 template<typename T>
 T Tensor<T>::get(int i, int j) {
@@ -33,15 +40,21 @@ void Tensor<T>::set(int i, T value) {
     data_[i] = value;
 }
 
+
 template<typename T>
-void Tensor<T>::view(int num_dims, int *dims) {
-    assert(num_dims > 0 && num_dims <= 4);
-    this->num_dims = num_dims;
-    std::copy(dims, dims + 4, this->dims);
+void Tensor<T>::add(int i, T value) {
+    data_[i] += value;
 }
 
 template<typename T>
-Tensor<T>::Tensor(int num_dims, int *dims) {
+void Tensor<T>::view(int new_num_dims, int *new_dims) {
+    assert(new_num_dims > 0 && new_num_dims <= 4);
+    this->num_dims = new_num_dims;
+    std::copy(new_dims, new_dims + 4, this->dims);
+}
+
+template<typename T>
+Tensor<T>::Tensor(int num_dims, int const *dims) {
     assert(num_dims > 0 && num_dims <= 4);
     int size = 1;
     for (int i = 0; i < num_dims; ++i) {
@@ -77,6 +90,12 @@ template<typename T>
 void Tensor<T>::set(int i, int j, int k, int l, T value) {
     assert(num_dims == 4);
     data_[l + k * dims[3] + j * dims[2] * dims[3] + i * dims[1] * dims[2] * dims[3]] = value;
+}
+
+template<typename T>
+void Tensor<T>::add(int i, int j, int k, int l, T value) {
+    assert(num_dims == 4);
+    data_[l + k * dims[3] + j * dims[2] * dims[3] + i * dims[1] * dims[2] * dims[3]] += value;
 }
 
 template<typename T>
@@ -140,7 +159,7 @@ Tensor<T> Tensor<T>::relu() {
 template<typename T>
 T sigmoid(T x) {
     return 1.0 / (1.0 + exp(-x));
-};
+}
 
 template<typename T>
 Tensor<T> Tensor<T>::sigmoid() {
@@ -156,7 +175,7 @@ Tensor<T> Tensor<T>::sigmoid() {
 template<typename T>
 T sigmoidPrime(T x) {
     return sigmoid(x) * (1.0 - sigmoid(x));
-};
+}
 
 template<typename T>
 Tensor<T> Tensor<T>::sigmoidPrime() {
@@ -282,16 +301,16 @@ template<typename T>
 Tensor<T> Tensor<T>::columnWiseSum() {
     assert(num_dims == 2);
     int rows = dims[0], cols = dims[1];
-    int dims[] = {cols};
-    Tensor<T> mean(1, dims);
+    int sum_dims[] = {cols};
+    Tensor<T> sum(1, sum_dims);
     for (int i = 0; i < cols; ++i) {
         T total = 0;
         for (int j = 0; j < rows; ++j) {
             total += get(j, i);
         }
-        mean.set(i, total);
+        sum.set(i, total);
     }
-    return mean;
+    return sum;
 }
 
 template<typename T>
@@ -324,6 +343,19 @@ void Tensor<T>::print() {
                 std::cout << "]\n";
             }
         }
+    } else {
+        printf("Tensor%dd (", num_dims);
+        for (int i = 0; i < num_dims; ++i) {
+            printf("%d", dims[i]);
+            if (i != (num_dims - 1)) {
+                printf(",");
+            }
+        }
+        printf(")\n[");
+        for (int j = 0; j < size_; ++j) {
+            printf("%lf ", data_[j]);
+        }
+        printf("]\n");
     }
 }
 
@@ -349,4 +381,38 @@ void Tensor<T>::dropout(std::default_random_engine generator, std::uniform_real_
     for (int i = 0; i < size_; ++i) {
         data_[i] = (distribution(generator) < p) / p;
     }
+}
+
+template<typename T>
+Tensor<T> Tensor<T>::convolve2d(Tensor<T> kernels, int stride, int padding, Tensor<T> bias) {
+    assert(kernels.dims[1] == dims[1]);
+    int w = ((dims[3] + 2 * padding - (kernels.dims[3] - 1) - 1) / stride) + 1;
+    int h = ((dims[2] + 2 * padding - (kernels.dims[2] - 1) - 1) / stride) + 1;
+    int result_dims[] = {dims[0], kernels.dims[0], h, w};
+    Tensor<T> output(4, result_dims);
+    for (int i = 0; i < dims[0]; ++i) { // pra cada img do batch
+        for (int j = 0; j < kernels.dims[0]; ++j) { // pra cada output volume
+            for (int k = 0; k < h; ++k) { // pra cada k vertical no output volume
+                for (int l = 0; l < w; ++l) { // pra cada l horizontal no output volume
+                    int im_si = stride * k - padding;
+                    int im_sj = stride * l - padding;
+                    T total = 0;
+                    for (int m = 0; m < kernels.dims[1]; ++m) { // pra cada canal do filtro
+                        for (int n = 0; n < kernels.dims[2]; ++n) {
+                            for (int o = 0; o < kernels.dims[3]; ++o) {
+                                int x = im_si + n, y = im_sj + o;
+                                if (x < 0 || x >= dims[2] || y < 0 || y >= dims[3])
+                                    continue; // se for regiao do padding, pula (soma 0)
+                                T a = get(i, m, x, y);
+                                T b = kernels.get(j, m, n, o);
+                                total += a * b;
+                            }
+                        }
+                    }
+                    output.set(i, j, k, l, total + bias.get(j));
+                }
+            }
+        }
+    }
+    return output;
 }

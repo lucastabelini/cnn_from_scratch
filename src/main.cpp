@@ -8,6 +8,7 @@
 #include "../include/MNISTDataLoader.h"
 #include "../include/ReLU.h"
 #include "../include/Tensor.h"
+#include "../include/Conv2d.h"
 
 using namespace std;
 
@@ -28,9 +29,9 @@ int main(int argc, char **argv) {
     printf("Loaded.\n");
 
     int seed = 0;
-
-    vector<Module *> modules = {new FullyConnected(784, 30, seed), new Sigmoid(), new FullyConnected(30, 10, seed)};
-    NetworkModel model = NetworkModel(modules, new SoftmaxClassifier(), 2.0);
+    vector<Module *> modules = {new Conv2d(1, 8, 3, 1, 0, 0), new FullyConnected(5408, 30, seed), new Sigmoid(),
+                                new FullyConnected(30, 10, seed)};
+    NetworkModel model = NetworkModel(modules, new SoftmaxClassifier(), 1);
 //    model.load("network.txt");
 
     int epochs = 1;

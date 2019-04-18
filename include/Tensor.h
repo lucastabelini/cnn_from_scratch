@@ -24,9 +24,11 @@ public:
     int dims[4]{}; // Max tensor dimensions is 4 (could be unlimited, but this makes the implementation simpler)
     Tensor() = default;
 
-    Tensor(int num_dims, int *dims);
+    Tensor(int num_dims, int const *dims);
 
-    void view(int num_dims, int *dims);
+    void view(int new_num_dims, int *new_dims);
+
+    void zero();
 
     T get(int i); // 1d tensor
     T get(int i, int j); // 2d tensor
@@ -41,10 +43,19 @@ public:
 
     void set(int i, int j, int k, int l, T value);
 
+    void add(int i, T value);
+
+    void add(int i, int j, int k, int l, T value);
+
     /*
      * Matrix multiplication
      */
     Tensor<T> matmul(Tensor<T> other);
+
+    /*
+     * 2D Convolution
+     */
+    Tensor<T> convolve2d(Tensor<T> kernels, int stride, int padding, Tensor<T> bias);
 
     /*
      * Returns the transposal
@@ -105,6 +116,8 @@ public:
      */
     Tensor<T> columnWiseSum();
 
+    Tensor<T> channelWiseSum();
+
     /*
      * Initializes a tensor's values from a distribution
      */
@@ -126,7 +139,6 @@ public:
 //    ~Tensor();
 
 };
-
 
 
 #endif //NEURAL_NET_IN_CPP_TENSOR_H

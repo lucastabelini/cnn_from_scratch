@@ -5,13 +5,14 @@
 #include "../include/Dropout.h"
 #include "../include/Tensor.h"
 
-Dropout::Dropout(double p) {
+Dropout::Dropout(double p, int seed) {
     p_ = p;
+    seed_ = seed;
 }
 
-Tensor<double> &Dropout::forward(Tensor<double> &input, int seed) {
+Tensor<double> &Dropout::forward(Tensor<double> &input) {
     dropout_ = Tensor<double>(input.num_dims, input.dims);
-    std::default_random_engine generator(seed);
+    std::default_random_engine generator(seed_);
     std::uniform_real_distribution<> distribution(0., 1.);
 
     dropout_.dropout(generator, distribution, p_);
