@@ -121,7 +121,7 @@ public:
     /*
      * Initializes a tensor's values from a distribution
      */
-    void randn(std::default_random_engine generator, std::normal_distribution<T> distribution, double multiplier);
+    void randn(std::default_random_engine generator, std::normal_distribution<double> distribution, double multiplier);
 
     /*
      * Prints the tensor's data

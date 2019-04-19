@@ -5,6 +5,10 @@
 #include "../include/Tensor.h"
 #include <cstring> // memset
 
+
+template
+class Tensor<int>;
+
 template
 class Tensor<float>;
 
@@ -313,9 +317,9 @@ Tensor<T> Tensor<T>::columnWiseSum() {
     return sum;
 }
 
-template<typename T>
+template <>
 void
-Tensor<T>::randn(std::default_random_engine generator, std::normal_distribution<T> distribution, double multiplier) {
+Tensor<double>::randn(std::default_random_engine generator, std::normal_distribution<double> distribution, double multiplier) {
     for (int i = 0; i < size_; ++i) {
         data_[i] = distribution(generator) * multiplier;
     }

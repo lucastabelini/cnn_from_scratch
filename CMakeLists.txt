@@ -3,4 +3,4 @@ project(neural_net_in_cpp)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(neural_net_in_cpp src/main.cpp src/NetworkModel.cpp src/MNISTDataLoader.cpp src/Tensor.cpp src/FullyConnected.cpp src/Sigmoid.cpp src/SoftmaxClassifier.cpp src/Dropout.cpp src/ReLU.cpp src/Conv2d.cpp)
+add_executable(neural_net_in_cpp src/main.cpp src/NetworkModel.cpp src/MNISTDataLoader.cpp src/Tensor.cpp src/FullyConnected.cpp src/Sigmoid.cpp src/SoftmaxClassifier.cpp src/Dropout.cpp src/ReLU.cpp src/Conv2d.cpp src/MaxPool.cpp)

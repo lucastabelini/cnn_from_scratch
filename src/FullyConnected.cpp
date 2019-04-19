@@ -20,6 +20,8 @@ FullyConnected::FullyConnected(int input_size, int output_size, int seed) {
 
 
 Tensor<double> &FullyConnected::forward(Tensor<double> &input) {
+    input_num_dims = input.num_dims;
+    std::copy(input.dims, input.dims + input.num_dims, input_dims);
     if (input.num_dims != 2) {
         // flatten tensor
         int flatten_size = 1;
@@ -39,7 +41,7 @@ Tensor<double> FullyConnected::backprop(Tensor<double> chainGradient, double lea
     Tensor<double> weightGradient = input_.matrixTranspose().matmul(chainGradient);
     Tensor<double> biasGradient = chainGradient.columnWiseSum();
     chainGradient = chainGradient.matmul(weights.matrixTranspose());
-    chainGradient.view(input_.num_dims, input_.dims);
+    chainGradient.view(input_num_dims, input_dims);
     weights -= weightGradient * learning_rate;
     bias -= biasGradient * learning_rate;
     return chainGradient;
