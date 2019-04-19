@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
     int seed = 0;
     vector<Module *> modules = {new Conv2d(1, 8, 3, 1, 0, seed), new MaxPool(2, 2), new ReLU(), new FullyConnected(1352, 30, seed), new ReLU(),
                                 new FullyConnected(30, 10, seed)};
-    auto lr_sched = new LinearLRScheduler(0.2, 0.000005);
+    auto lr_sched = new LinearLRScheduler(0.2, -0.000005);
     NetworkModel model = NetworkModel(modules, new SoftmaxClassifier(), lr_sched);
 //    model.load("network.txt");
 
