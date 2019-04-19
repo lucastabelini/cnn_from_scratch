@@ -20,8 +20,11 @@ Run:
 ```sh
 ./neural_net_in_cpp data
 ```
-The training should take less than 10s and achieve +90% accuracy.
+The training should take about a minute and achieve ~97% accuracy.
+
 ### Todos
+ - [x] Fully connected;
+ - [x] Sigmoid;
  - [x] Dropout;
  - [x] ReLU;
  - [ ] Tanh;
@@ -30,7 +33,9 @@ The training should take less than 10s and achieve +90% accuracy.
  - [x] Convolutional layers;
  - [x] Max pooling;
  - [ ] Other optimizers (Adam, RMSProp, etc);
- - [ ] Learning rate scheduler;
+ - [x] Learning rate scheduler;
+ - [ ] Plots;
+ - [ ] Filter visualization
  - [ ] CUDA?
 
 License

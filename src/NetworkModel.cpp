@@ -3,17 +3,18 @@
 //
 
 #include "../include/NetworkModel.h"
+#include "../include/LRScheduler.h"
 #include "../include/Tensor.h"
 
 using namespace std;
 
-NetworkModel::NetworkModel(std::vector<Module *> &modules, OutputLayer *output_layer, double learning_rate) {
+NetworkModel::NetworkModel(std::vector<Module *> &modules, OutputLayer *output_layer, LRScheduler* lr_scheduler) {
     modules_ = modules;
-    learning_rate_ = learning_rate;
+    lr_scheduler_ = lr_scheduler;
     output_layer_ = output_layer;
 }
 
-double NetworkModel::trainStep(Tensor<double> &x, vector<int> y) {
+double NetworkModel::trainStep(Tensor<double> &x, vector<int>& y) {
     // Forward
     Tensor<double> output = forward(x);
 
@@ -21,9 +22,10 @@ double NetworkModel::trainStep(Tensor<double> &x, vector<int> y) {
     pair<double, Tensor<double>> loss_and_cost_gradient = output_layer_->backprop(y);
     Tensor<double> chain_gradient = loss_and_cost_gradient.second;
     for (int i = (int) modules_.size() - 1; i >= 0; --i) {
-        chain_gradient = modules_[i]->backprop(chain_gradient, learning_rate_);
+        chain_gradient = modules_[i]->backprop(chain_gradient, lr_scheduler_->learning_rate);
     }
-
+    ++iteration;
+    lr_scheduler_->onIterationEnd(iteration);
     // Return loss
     return loss_and_cost_gradient.first;
 }
@@ -78,4 +80,5 @@ NetworkModel::~NetworkModel() {
         delete module;
     }
     delete output_layer_;
+    delete lr_scheduler_;
 }

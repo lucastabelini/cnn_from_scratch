@@ -10,6 +10,7 @@
 #include "../include/Tensor.h"
 #include "../include/Conv2d.h"
 #include "../include/MaxPool.h"
+#include "../include/LinearLRScheduler.h"
 
 using namespace std;
 
@@ -30,9 +31,10 @@ int main(int argc, char **argv) {
     printf("Loaded.\n");
 
     int seed = 0;
-    vector<Module *> modules = {new Conv2d(1, 8, 3, 1, 0, seed), new MaxPool(2, 2), new FullyConnected(1352, 30, seed), new Sigmoid(),
+    vector<Module *> modules = {new Conv2d(1, 8, 3, 1, 0, seed), new MaxPool(2, 2), new ReLU(), new FullyConnected(1352, 30, seed), new ReLU(),
                                 new FullyConnected(30, 10, seed)};
-    NetworkModel model = NetworkModel(modules, new SoftmaxClassifier(), 1);
+    auto lr_sched = new LinearLRScheduler(0.2, 0.000005);
+    NetworkModel model = NetworkModel(modules, new SoftmaxClassifier(), lr_sched);
 //    model.load("network.txt");
 
     int epochs = 1;

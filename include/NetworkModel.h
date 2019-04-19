@@ -9,6 +9,7 @@
 #include "Tensor.h"
 #include "Module.h"
 #include "OutputLayer.h"
+#include "../include/LRScheduler.h"
 
 /*
  * Train and test a neural network defined by Modules
@@ -17,11 +18,12 @@ class NetworkModel {
 private:
     std::vector<Module *> modules_;
     OutputLayer *output_layer_;
-    double learning_rate_;
+    LRScheduler* lr_scheduler_;
+    int iteration = 0;
 public:
-    NetworkModel(std::vector<Module *> &modules, OutputLayer *output_layer, double learning_rate);
+    NetworkModel(std::vector<Module *> &modules, OutputLayer *output_layer, LRScheduler* lr_scheduler);
 
-    double trainStep(Tensor<double> &x, std::vector<int> y);
+    double trainStep(Tensor<double> &x, std::vector<int> &y);
 
     Tensor<double> forward(Tensor<double> &x);
 

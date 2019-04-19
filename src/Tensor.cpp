@@ -232,7 +232,6 @@ Tensor<T> Tensor<T>::softmax() {
 
 template<typename T>
 Tensor<T> Tensor<T>::reluPrime() {
-    assert(num_dims == 2);
     Tensor<T> prime(num_dims, dims);
     for (int i = 0; i < size_; ++i) {
         prime.data_[i] = data_[i] > 0 ? 1 : 0;
@@ -317,16 +316,17 @@ Tensor<T> Tensor<T>::columnWiseSum() {
     return sum;
 }
 
-template <>
+template<>
 void
-Tensor<double>::randn(std::default_random_engine generator, std::normal_distribution<double> distribution, double multiplier) {
+Tensor<double>::randn(std::default_random_engine generator, std::normal_distribution<double> distribution,
+                      double multiplier) {
     for (int i = 0; i < size_; ++i) {
         data_[i] = distribution(generator) * multiplier;
     }
 }
 
-template<typename T>
-void Tensor<T>::print() {
+template<>
+void Tensor<double>::print() {
     if (num_dims == 2) {
         int rows = dims[0], cols = dims[1];
         std::cout << "Tensor2D (" << rows << ", " << cols << ")\n[";
