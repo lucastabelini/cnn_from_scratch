@@ -27,8 +27,8 @@ The training should take less than 10s and achieve +90% accuracy.
  - [ ] Tanh;
  - [ ] Leaky ReLU;
  - [ ] Batch normalization;
- - [ ] Convolutional layers;
- - [ ] Max pooling;
+ - [x] Convolutional layers;
+ - [x] Max pooling;
  - [ ] Other optimizers (Adam, RMSProp, etc);
  - [ ] Learning rate scheduler;
  - [ ] CUDA?
