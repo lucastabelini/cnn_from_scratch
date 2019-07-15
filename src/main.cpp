@@ -61,6 +61,8 @@ int main(int argc, char **argv) {
     MNISTDataLoader test_loader(data_path + "/t10k-images-idx3-ubyte", data_path + "/t10k-labels-idx1-ubyte", 32);
     printf("Loaded.\n");
 
+    model.eval();
+
     // Test and measure accuracy
     int hits = 0;
     int total = 0;

@@ -11,6 +11,10 @@ Dropout::Dropout(double p, int seed) {
 }
 
 Tensor<double> &Dropout::forward(Tensor<double> &input) {
+//    if (isEval) {
+//        return input;
+//    }
+
     dropout_ = Tensor<double>(input.num_dims, input.dims);
     std::default_random_engine generator(seed_);
     std::uniform_real_distribution<> distribution(0., 1.);

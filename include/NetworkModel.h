@@ -34,6 +34,8 @@ public:
     void save(std::string path);
 
     virtual ~NetworkModel();
+
+    void eval();
 };
 
 

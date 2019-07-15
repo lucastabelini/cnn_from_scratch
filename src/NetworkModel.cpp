@@ -82,3 +82,9 @@ NetworkModel::~NetworkModel() {
     delete output_layer_;
     delete lr_scheduler_;
 }
+
+void NetworkModel::eval() {
+    for (auto &module : modules_) {
+        module->eval();
+    }
+}
